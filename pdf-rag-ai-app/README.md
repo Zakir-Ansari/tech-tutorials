@@ -19,6 +19,7 @@ A complete, production-grade **Retrieval Augmented Generation (RAG)** applicatio
 
 ---
 
+<a name="quick-start"></a>
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -75,6 +76,7 @@ Open **http://localhost:8501** and start uploading PDFs and asking questions! �
 
 ---
 
+<a name="what-is-rag-how-does-it-work"></a>
 ## 🤖 What is RAG? How does it work?
 
 ### Understanding RAG in Simple Terms
@@ -168,6 +170,7 @@ Let's say your company has service agreements with clients and you want to ask: 
 
 ---
 
+<a name="technology-stack"></a>
 ## 🛠️ Technology Stack
 
 Our application uses carefully selected modern technologies, each serving a specific purpose:
@@ -229,6 +232,7 @@ Provides state-of-the-art language models.
 
 ---
 
+<a name="project-setup-and-dependencies"></a>
 ## 📦 Project Setup and Dependencies
 
 ### Prerequisites
@@ -285,6 +289,7 @@ OPENAI_API_KEY=your_api_key_here
 
 ---
 
+<a name="how-the-application-works"></a>
 ## 🏗️ How the Application Works
 
 ### Complete Application Architecture
@@ -548,6 +553,7 @@ Here's how a question flows through the RAG system to get an intelligent answer:
 
 ---
 
+<a name="step-by-step-implementation"></a>
 ## 🔧 Step-by-Step Implementation
 
 ### Phase 1: Vector Database Setup
@@ -1300,6 +1306,7 @@ with st.form("rag_query_form"):
 
 ---
 
+<a name="running-the-application"></a>
 ## 🚀 Running the Application
 
 ### Prerequisites Check
@@ -1414,6 +1421,7 @@ The Inngest dashboard at http://localhost:8288 shows:
 
 ---
 
+<a name="testing-the-application"></a>
 ## 🧪 Testing the Application
 
 ### Manual Testing in Inngest Dashboard
