@@ -8,14 +8,14 @@ A complete, production-grade **Retrieval Augmented Generation (RAG)** applicatio
 
 ## 🎯 Table of Contents
 
-1. [Quick Start](#-quick-start)
+1. [Quick Start](#quick-start)
 2. [What is RAG? How does it work?](#what-is-rag-how-does-it-work)
-3. [Technology Stack](#-technology-stack)
-4. [Project Setup and Dependencies](#-project-setup-and-dependencies)
-5. [How the Application Works](#-how-the-application-works)
-6. [Step-by-Step Implementation](#-step-by-step-implementation)
-7. [Running the Application](#-running-the-application)
-8. [Understanding the Flow](#-understanding-the-flow)
+3. [Technology Stack](#technology-stack)
+4. [Project Setup and Dependencies](#project-setup-and-dependencies)
+5. [How the Application Works](#how-the-application-works)
+6. [Step-by-Step Implementation](#step-by-step-implementation)
+7. [Running the Application](#running-the-application)
+8. [Understanding the Flow](#understanding-the-flow)
 
 ---
 
