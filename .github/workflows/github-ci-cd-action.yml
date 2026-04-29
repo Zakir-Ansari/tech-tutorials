@@ -1,0 +1,43 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "github-ci-cd-actions-tutorial" ]
+
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java JDK
+      uses: actions/setup-java@v5.2.0
+      with:
+        distribution: 'temurin'
+        java-version: 25
+
+    - name: Build Jar
+      run: |
+        cd github-actions-ci-cd
+        ./mvnw clean package -DskipTests
+
+    - name: Login to Docker Hub
+      run: |
+        cd github-actions-ci-cd
+        docker login -u {{ secrets.DOCKER_USERNAME }} --password-stdin
+
+    - name: Build Docker Image
+      run: |
+        cd github-actions-ci-cd
+        docker build -t {{ secrets.DOCKER_USERNAME }}/spring-boot-ci-demo:latest
+
+    - name: Push Image to Dockere Hub
+      run: |
+        cd github-actions-ci-cd
+        docker push -t {{ secrets.DOCKER_USERNAME }}/spring-boot-ci-demo:latest
+
+    - name: SSH and Deploy to EC2
+      
