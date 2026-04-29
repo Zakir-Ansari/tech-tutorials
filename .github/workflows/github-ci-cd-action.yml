@@ -33,7 +33,7 @@ jobs:
     - name: Build Docker Image
       run: |
         cd github-actions-ci-cd
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot-ci-cd-demo:latest
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot-ci-cd-demo:latest .
 
     - name: Push Image to Dockere Hub
       run: |
