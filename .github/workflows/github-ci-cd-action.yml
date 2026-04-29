@@ -38,7 +38,7 @@ jobs:
     - name: Push Image to Dockere Hub
       run: |
         cd github-actions-ci-cd
-        docker push -t ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot-ci-cd-demo:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot-ci-cd-demo:latest
 
     - name: SSH and Deploy to EC2
       uses: appleboy/ssh-action@v1
