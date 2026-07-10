@@ -34,3 +34,4 @@ This repository contains various tech projects with step-by-step tutorials acros
 | Tutorial | Stack | Description |
 |----------|-------|-------------|
 | [Spring Boot Security Example](./spring-boot-security/) | Spring Boot, Security | Example project demonstrating Spring Boot security configuration and best practices |
+
