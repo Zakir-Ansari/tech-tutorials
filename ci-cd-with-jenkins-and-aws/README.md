@@ -10,18 +10,18 @@
 
 <p align="center">
   <img src="https://images.seeklogo.com/logo-png/27/1/jenkins-logo-png_seeklogo-273560.png" alt="Jenkins" width="50"/>
-  &nbsp;&nbsp;
-  <img src="https://logo.svgcdn.com/l/aws-ec2.png" alt="AWS" width="50"/>
-  &nbsp;&nbsp;
+    
+  <img src="https://www.logo.wine/a/logo/Amazon_Web_Services/Amazon_Web_Services-Logo.wine.svg" alt="AWS" width="50"/>
+    
   <img src="https://1000logos.net/wp-content/uploads/2022/07/Kubernetes-Logo.png" alt="Kubernetes" width="50"/>
-  &nbsp;&nbsp;
-  <img src="https://logo.svgcdn.com/l/docker.png" alt="Docker" width="50"/>
-  &nbsp;&nbsp;
+    
+  <img src="../resources/github-actions-ci-cd/docker-logo.png" alt="Docker" width="50"/>
+    
   <img src="https://www.svgrepo.com/show/354365/sonarqube.svg" alt="SonarQube" width="50"/>
-  &nbsp;&nbsp;
-  <img src="https://logo.svgcdn.com/l/prometheus.png" alt="Prometheus" width="50"/>
-  &nbsp;&nbsp;
-  <img src="https://logo.svgcdn.com/l/grafana.png" alt="Grafana" width="50"/>
+    
+  <img src="https://cdn.iconscout.com/icon/free/png-256/free-prometheus-icon-svg-download-png-282488.png" alt="Prometheus" width="50"/>
+    
+  <img src="https://cdn.iconscout.com/icon/free/png-256/free-grafana-logo-icon-svg-download-png-2944910.png" alt="Grafana" width="50"/>
 </p>
 
 ---
@@ -70,7 +70,7 @@
 
 ---
 
-## Introduction
+## 📖 Introduction
 
 In a real-world corporate environment, shipping code to production is never as simple as running it on your laptop. You need a robust pipeline that automates building, testing, scanning, deploying, and monitoring — all while keeping your infrastructure secure.
 
@@ -86,23 +86,23 @@ No prior DevOps experience is required. Every command and concept is explained w
 
 ---
 
-## What You Will Build
+## 🎯 What You Will Build
 
 By the end of this tutorial, you will have:
 
-- A **private VPC** on AWS with properly configured security groups
-- A **3-node Kubernetes cluster** (1 master + 2 workers) on EC2
-- **SonarQube** running for code quality analysis
-- **Nexus** running as an artifact repository
-- **Jenkins** configured with a full CI/CD pipeline
-- **Trivy** installed for filesystem and Docker image vulnerability scanning
-- **Docker** images built, scanned, and pushed to Docker Hub
-- **Kubernetes deployment** with RBAC, service accounts, and LoadBalancer service
-- **Prometheus + Grafana** dashboards monitoring both website uptime and system metrics
+- ✅ A **private VPC** on AWS with properly configured security groups
+- ✅ A **3-node Kubernetes cluster** (1 master + 2 workers) on EC2
+- ✅ **SonarQube** running for code quality analysis
+- ✅ **Nexus** running as an artifact repository
+- ✅ **Jenkins** configured with a full CI/CD pipeline
+- ✅ **Trivy** installed for filesystem and Docker image vulnerability scanning
+- ✅ **Docker** images built, scanned, and pushed to Docker Hub
+- ✅ **Kubernetes deployment** with RBAC, service accounts, and LoadBalancer service
+- ✅ **Prometheus + Grafana** dashboards monitoring both website uptime and system metrics
 
 ---
 
-## Pipeline Architecture
+## 🏗️ Pipeline Architecture
 
 ![](../resources/ci-cd-with-jenkins-and-aws/ci-cd-pipeline-1.png)
 
@@ -117,13 +117,13 @@ flowchart LR
     TEST --> TRIVY_FS[Trivy<br/>File System Scan]
     TRIVY_FS --> SONAR[SonarQube<br/>Code Quality]
     SONAR --> QG[Quality Gate<br/>Check]
-    QG --> BUILD[Build &amp; Package<br/>mvn package]
+    QG --> BUILD[Build & Package<br/>mvn package]
     BUILD --> NEXUS[Nexus<br/>Artifact Repository]
     BUILD --> DOCKER[Build Docker<br/>Image]
     DOCKER --> TRIVY_IMG[Trivy<br/>Image Scan]
     TRIVY_IMG --> HUB[Docker Hub<br/>Push Image]
     HUB --> K8S[Kubernetes<br/>Cluster]
-    K8S --> MONITOR[Prometheus &amp;<br/>Grafana]
+    K8S --> MONITOR[Prometheus &<br/>Grafana]
 ```
 
 **How the pipeline works:**
@@ -141,7 +141,7 @@ flowchart LR
 
 ---
 
-## Prerequisites
+## 📋 Prerequisites
 
 ### AWS Requirements
 
@@ -151,12 +151,12 @@ flowchart LR
 
 ### Software on Your Local Machine
 
-| Tool | Purpose | Install |
-|------|---------|---------|
-| **SSH client** | Connect to EC2 instances | Built-in on macOS/Linux. On Windows, use MobaXterm or PuTTY |
-| **Git Bash** | Work with Git repositories from command line | [Download Git for Windows](https://git-scm.com/download/win) |
-| **Docker Hub account** | Store container images | [Sign up at hub.docker.com](https://hub.docker.com) |
-| **GitHub account** | Host source code | [Sign up at github.com](https://github.com) |
+| Tool                   | Purpose                                      | Install                                                      |
+| ---------------------- | -------------------------------------------- | ------------------------------------------------------------ |
+| **SSH client**         | Connect to EC2 instances                     | Built-in on macOS/Linux. On Windows, use MobaXterm or PuTTY  |
+| **Git Bash**           | Work with Git repositories from command line | [Download Git for Windows](https://git-scm.com/download/win) |
+| **Docker Hub account** | Store container images                       | [Sign up at hub.docker.com](https://hub.docker.com)          |
+| **GitHub account**     | Host source code                             | [Sign up at github.com](https://github.com)                  |
 
 ### Knowledge Assumptions
 
@@ -166,47 +166,47 @@ flowchart LR
 
 ---
 
-## Tools, Services & Components
+## 🧰 Tools, Services & Components
 
 This tutorial uses many tools. The table below explains each one so you understand what you are installing and why.
 
-| Icon | Tool / Component | Purpose in This Tutorial | Beginner Explanation |
-|------|-----------------|--------------------------|----------------------|
-| <img src="https://logo.svgcdn.com/l/aws-ec2.png" alt="AWS" width="24"/> | **AWS EC2** | Hosts all virtual machines | Virtual servers in the cloud that run your Kubernetes cluster and DevOps tools |
-| | **VPC (Virtual Private Cloud)** | Isolates your infrastructure | A private network in AWS that keeps all your resources hidden from the public internet |
-| | **Security Group** | Controls network traffic | A cloud firewall that defines which ports and IP addresses can communicate with your servers |
-| <img src="https://1000logos.net/wp-content/uploads/2022/07/Kubernetes-Logo.png" alt="K8s" width="24"/> | **Kubernetes (K8s)** | Orchestrates container deployments | A platform that manages running your application across multiple servers, handling scaling and self-healing |
-| | **kubeadm** | Bootstraps the Kubernetes cluster | A command-line tool that sets up the Kubernetes control plane and joins nodes to the cluster |
-| | **kubelet** | Manages containers on each node | An agent running on every node that ensures containers are running and healthy |
-| | **kubectl** | Interacts with the Kubernetes cluster | The primary CLI tool for talking to Kubernetes — deploying apps, checking status, debugging |
-| | **Flannel** | Provides pod networking | A networking plugin that gives every pod a unique IP and enables cross-node communication |
-| <img src="https://images.seeklogo.com/logo-png/27/1/jenkins-logo-png_seeklogo-273560.png" alt="Jenkins" width="24"/> | **Jenkins** | Runs the CI/CD pipeline | An automation server that executes your build, test, scan, and deployment steps automatically |
-| <img src="https://logo.svgcdn.com/l/docker.png" alt="Docker" width="24"/> | **Docker** | Builds and runs containers | A tool that packages your application with all its dependencies into a standardized unit called a container |
-| <img src="https://www.svgrepo.com/show/354365/sonarqube.svg" alt="SonarQube" width="24"/> | **SonarQube** | Code quality analysis | A tool that inspects your source code for bugs, vulnerabilities, and code quality issues |
-| | **SonarQube Scanner** | Performs the actual analysis | The CLI tool that scans your code and generates a report. It publishes results to the SonarQube server |
-| <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*1QmnCGV2MlaY-CeBCUYpXg.png" alt="Nexus" width="24"/> | **Nexus** | Artifact repository management | A repository that stores your compiled application packages (JARs) so you can manage versions and releases |
-| <img src="https://miro.medium.com/v2/resize:fit:730/0*Vb-u9UQM5E6wWhpI.png" alt="Trivy" width="24"/> | **Trivy** | Security vulnerability scanner | A tool that scans your filesystem and Docker images for known security vulnerabilities |
-| | **RBAC** | Role-Based Access Control | A security model where you assign permissions based on roles (e.g., admin, developer, read-only) |
-| <img src="https://logo.svgcdn.com/l/prometheus.png" alt="Prometheus" width="24"/> | **Prometheus** | Metrics collection and alerting | A monitoring system that scrapes (collects) metrics from your applications and infrastructure |
-| <img src="https://logo.svgcdn.com/l/grafana.png" alt="Grafana" width="24"/> | **Grafana** | Monitoring dashboards | A visualization tool that creates beautiful, real-time dashboards from Prometheus data |
-| | **Blackbox Exporter** | Website uptime monitoring | A Prometheus exporter that probes your websites from the outside to check if they are up and responding |
-| | **Node Exporter** | System metrics monitoring | A Prometheus exporter that reports CPU, RAM, disk, and network usage from your servers |
+| Icon                                                                                                                                  | Tool / Component                | Purpose in This Tutorial              | Beginner Explanation                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| <img src="https://www.logo.wine/a/logo/Amazon_Web_Services/Amazon_Web_Services-Logo.wine.svg" alt="AWS" width="24"/>                  | **AWS EC2**                     | Hosts all virtual machines            | Virtual servers in the cloud that run your Kubernetes cluster and DevOps tools                              |
+|                                                                                                                                       | **VPC (Virtual Private Cloud)** | Isolates your infrastructure          | A private network in AWS that keeps all your resources hidden from the public internet                      |
+|                                                                                                                                       | **Security Group**              | Controls network traffic              | A cloud firewall that defines which ports and IP addresses can communicate with your servers                |
+| <img src="https://1000logos.net/wp-content/uploads/2022/07/Kubernetes-Logo.png" alt="K8s" width="24"/>                                | **Kubernetes (K8s)**            | Orchestrates container deployments    | A platform that manages running your application across multiple servers, handling scaling and self-healing |
+|                                                                                                                                       | **kubeadm**                     | Bootstraps the Kubernetes cluster     | A command-line tool that sets up the Kubernetes control plane and joins nodes to the cluster                |
+|                                                                                                                                       | **kubelet**                     | Manages containers on each node       | An agent running on every node that ensures containers are running and healthy                              |
+|                                                                                                                                       | **kubectl**                     | Interacts with the Kubernetes cluster | The primary CLI tool for talking to Kubernetes — deploying apps, checking status, debugging                 |
+|                                                                                                                                       | **Flannel**                     | Provides pod networking               | A networking plugin that gives every pod a unique IP and enables cross-node communication                   |
+| <img src="https://images.seeklogo.com/logo-png/27/1/jenkins-logo-png_seeklogo-273560.png" alt="Jenkins" width="24"/>                  | **Jenkins**                     | Runs the CI/CD pipeline               | An automation server that executes your build, test, scan, and deployment steps automatically               |
+| <img src="../resources/github-actions-ci-cd/docker-logo.png" alt="Docker" width="24"/>                                                | **Docker**                      | Builds and runs containers            | A tool that packages your application with all its dependencies into a standardized unit called a container |
+| <img src="https://www.svgrepo.com/show/354365/sonarqube.svg" alt="SonarQube" width="24"/>                                             | **SonarQube**                   | Code quality analysis                 | A tool that inspects your source code for bugs, vulnerabilities, and code quality issues                    |
+|                                                                                                                                       | **SonarQube Scanner**           | Performs the actual analysis          | The CLI tool that scans your code and generates a report. It publishes results to the SonarQube server      |
+| <img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*1QmnCGV2MlaY-CeBCUYpXg.png" alt="Nexus" width="24"/>                | **Nexus**                       | Artifact repository management        | A repository that stores your compiled application packages (JARs) so you can manage versions and releases  |
+| <img src="https://miro.medium.com/v2/resize:fit:730/0*Vb-u9UQM5E6wWhpI.png" alt="Trivy" width="24"/>                                  | **Trivy**                       | Security vulnerability scanner        | A tool that scans your filesystem and Docker images for known security vulnerabilities                      |
+|                                                                                                                                       | **RBAC**                        | Role-Based Access Control             | A security model where you assign permissions based on roles (e.g., admin, developer, read-only)            |
+| <img src="https://cdn.iconscout.com/icon/free/png-256/free-prometheus-icon-svg-download-png-282488.png" alt="Prometheus" width="24"/> | **Prometheus**                  | Metrics collection and alerting       | A monitoring system that scrapes (collects) metrics from your applications and infrastructure               |
+| <img src="https://cdn.iconscout.com/icon/free/png-256/free-grafana-logo-icon-svg-download-png-2944910.png" alt="Grafana" width="24"/> | **Grafana**                     | Monitoring dashboards                 | A visualization tool that creates beautiful, real-time dashboards from Prometheus data                      |
+|                                                                                                                                       | **Blackbox Exporter**           | Website uptime monitoring             | A Prometheus exporter that probes your websites from the outside to check if they are up and responding     |
+|                                                                                                                                       | **Node Exporter**               | System metrics monitoring             | A Prometheus exporter that reports CPU, RAM, disk, and network usage from your servers                      |
 
 ### EC2 Instances Created in This Tutorial
 
-| Instance Name | Purpose | Instance Type | Storage |
-|---------------|---------|---------------|---------|
-| **Master** | Kubernetes control plane | t3.medium | 25 GB |
-| **Slave-1** | Kubernetes worker node | t3.medium | 25 GB |
-| **Slave-2** | Kubernetes worker node | t3.medium | 25 GB |
-| **Jenkins** | CI/CD automation server | t2.large (8 GB RAM) | 30 GB |
-| **SonarQube** | Code quality server | t2.medium | 20 GB |
-| **Nexus** | Artifact repository server | t2.medium | 20 GB |
-| **Monitor** | Prometheus, Grafana, exporters | t2.large | 20 GB |
+| Instance Name | Purpose                        | Instance Type       | Storage |
+| ------------- | ------------------------------ | ------------------- | ------- |
+| **Master**    | Kubernetes control plane       | t3.medium           | 25 GB   |
+| **Slave-1**   | Kubernetes worker node         | t3.medium           | 25 GB   |
+| **Slave-2**   | Kubernetes worker node         | t3.medium           | 25 GB   |
+| **Jenkins**   | CI/CD automation server        | t2.large (8 GB RAM) | 30 GB   |
+| **SonarQube** | Code quality server            | t2.medium           | 20 GB   |
+| **Nexus**     | Artifact repository server     | t2.medium           | 20 GB   |
+| **Monitor**   | Prometheus, Grafana, exporters | t2.large            | 20 GB   |
 
 ---
 
-## AWS Infrastructure Setup
+## ☁️ AWS Infrastructure Setup
 
 Before installing any tools, you need a secure network environment. In a corporate setup, all resources are deployed in an isolated network so that no outside entity can access them.
 
@@ -224,7 +224,7 @@ Before installing any tools, you need a secure network environment. In a corpora
 
 ---
 
-## Phase 1 — Infrastructure Setup
+## Phase 1 — 🖥️ Infrastructure Setup
 
 ### 1.1 Create a Secure Network (VPC)
 
@@ -236,18 +236,18 @@ A **Security Group** acts as a virtual firewall for your EC2 instances. You need
 
 Go to **EC2 > Security Groups** and modify the default security group (or create a new one) with the following **inbound rules**:
 
-| Service | Protocol | Port | Source | Why It Is Needed |
-|---------|----------|------|--------|------------------|
-| SSH | TCP | 22 | Your IP or `0.0.0.0/0` | Connect to instances via terminal |
-| HTTP | TCP | 80 | `0.0.0.0/0` | Web traffic |
-| HTTPS | TCP | 443 | `0.0.0.0/0` | Secure web traffic |
-| Kubernetes API | TCP | 6443 | Security Group itself | Kubernetes cluster communication |
-| NodePort Range | TCP | 30000–32767 | `0.0.0.0/0` | Access deployed applications externally |
-| Application Range | TCP | 3000–10000 | `0.0.0.0/0` | Access Jenkins (8080), SonarQube (9000), Nexus (8081), Grafana (3000) |
-| SMTPS | TCP | 465 | `0.0.0.0/0` | Email notifications from Jenkins via Gmail |
-| All TCP | TCP | All | Security Group itself | Internal cluster communication |
-| All UDP | UDP | All | Security Group itself | Internal cluster communication |
-| All ICMP | ICMP | All | Security Group itself | Network diagnostics (ping) |
+| Service           | Protocol | Port        | Source                 | Why It Is Needed                                                      |
+| ----------------- | -------- | ----------- | ---------------------- | --------------------------------------------------------------------- |
+| SSH               | TCP      | 22          | Your IP or `0.0.0.0/0` | Connect to instances via terminal                                     |
+| HTTP              | TCP      | 80          | `0.0.0.0/0`            | Web traffic                                                           |
+| HTTPS             | TCP      | 443         | `0.0.0.0/0`            | Secure web traffic                                                    |
+| Kubernetes API    | TCP      | 6443        | Security Group itself  | Kubernetes cluster communication                                      |
+| NodePort Range    | TCP      | 30000–32767 | `0.0.0.0/0`            | Access deployed applications externally                               |
+| Application Range | TCP      | 3000–10000  | `0.0.0.0/0`            | Access Jenkins (8080), SonarQube (9000), Nexus (8081), Grafana (3000) |
+| SMTPS             | TCP      | 465         | `0.0.0.0/0`            | Email notifications from Jenkins via Gmail                            |
+| All TCP           | TCP      | All         | Security Group itself  | Internal cluster communication                                        |
+| All UDP           | UDP      | All         | Security Group itself  | Internal cluster communication                                        |
+| All ICMP          | ICMP     | All         | Security Group itself  | Network diagnostics (ping)                                            |
 
 > **Key concept:** Rules with source set to **"This Security Group"** mean only other instances using the same security group can reach those ports. This keeps cluster traffic internal.
 
@@ -267,11 +267,11 @@ Create **three EC2 instances** for your Kubernetes cluster:
 6. Set storage to **25 GB**
 7. Launch **3 instances** and name them:
 
-| Instance | Role |
-|----------|------|
-| **Master** | Kubernetes control plane node |
-| **Slave-1** | Kubernetes worker node |
-| **Slave-2** | Kubernetes worker node |
+| Instance    | Role                          |
+| ----------- | ----------------------------- |
+| **Master**  | Kubernetes control plane node |
+| **Slave-1** | Kubernetes worker node        |
+| **Slave-2** | Kubernetes worker node        |
 
 ![](../resources/ci-cd-with-jenkins-and-aws/ec2-instance-creation-1.png)
 
@@ -375,8 +375,8 @@ Run this command **only on the Master node**:
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
 
-| Flag | What It Does |
-|------|-------------|
+| Flag                 | What It Does                                                                        |
+| -------------------- | ----------------------------------------------------------------------------------- |
 | `--pod-network-cidr` | Defines the IP range for pod networking. `10.244.0.0/16` is the default for Flannel |
 
 After a successful init, configure `kubectl` access:
@@ -411,6 +411,7 @@ sudo kubeadm join <MASTER_PRIVATE_IP>:6443 --token <TOKEN> --discovery-token-ca-
 ```
 
 > **Important:** If you lost the join command, generate a new one on the Master:
+> 
 > ```bash
 > kubeadm token create --print-join-command
 > ```
@@ -462,11 +463,11 @@ kubeaudit all
 
 Now create additional EC2 instances for your DevOps tools. Go to **EC2 > Launch Instance** and create:
 
-| Instance | Name | Instance Type | Storage |
-|----------|------|---------------|---------|
-| SonarQube Server | `sonar` | t2.medium | 20 GB |
-| Nexus Server | `nexus` | t2.medium | 20 GB |
-| Jenkins Server | `jenkins` | t2.large (8 GB RAM) | 30 GB |
+| Instance         | Name      | Instance Type       | Storage |
+| ---------------- | --------- | ------------------- | ------- |
+| SonarQube Server | `sonar`   | t2.medium           | 20 GB   |
+| Nexus Server     | `nexus`   | t2.medium           | 20 GB   |
+| Jenkins Server   | `jenkins` | t2.large (8 GB RAM) | 30 GB   |
 
 > **Important:** Jenkins needs at least **8 GB of RAM** to run smoothly with all plugins. SonarQube and Nexus work fine with 4 GB.
 
@@ -524,11 +525,11 @@ Run this on the **SonarQube server**:
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 ```
 
-| Flag | What It Does |
-|------|-------------|
-| `-d` | Runs the container in detached mode (background) |
-| `--name sonar` | Names the container "sonar" |
-| `-p 9000:9000` | Maps host port 9000 to container port 9000 |
+| Flag           | What It Does                                     |
+| -------------- | ------------------------------------------------ |
+| `-d`           | Runs the container in detached mode (background) |
+| `--name sonar` | Names the container "sonar"                      |
+| `-p 9000:9000` | Maps host port 9000 to container port 9000       |
 
 **Verify it is running:**
 
@@ -625,7 +626,7 @@ Paste the password in the browser. On the **Customize Jenkins** page, select **I
 
 ---
 
-## Phase 2 — Source Code Management
+## Phase 2 — 📂 Source Code Management
 
 ### Create a Private GitHub Repository
 
@@ -651,27 +652,27 @@ git push origin main
 
 ---
 
-## Phase 3 — CI/CD Pipeline Configuration
+## Phase 3 — ⚙️ CI/CD Pipeline Configuration
 
 ### 3.1 Install Jenkins Plugins
 
 Go to **Manage Jenkins > Plugins > Available Plugins** and install the following:
 
-| Plugin | Purpose |
-|--------|---------|
-| Eclipse Temurin Installer | Manages JDK installations automatically |
-| Pipeline: Stage View | Visualizes each pipeline stage in the UI |
-| Config File Provider | Manages settings.xml files for Maven/Nexus integration |
-| Pipeline Maven Integration | Integrates Maven tools into Jenkins pipelines |
-| SonarQube Scanner | Runs SonarQube analysis from Jenkins |
-| Docker | Docker tool integration |
-| Docker Pipeline | Docker commands in Jenkins pipelines |
-| Kubernetes Client API | Kubernetes API client for Jenkins |
-| Kubernetes Credentials | Manages Kubernetes authentication credentials |
-| Kubernetes | Kubernetes integration for dynamic build agents |
-| Kubernetes CLI | kubectl commands in Jenkins pipelines |
-| Maven Integration | Maven project type for Jenkins |
-| Prometheus Metrics | Exposes Jenkins metrics for Prometheus monitoring |
+| Plugin                     | Purpose                                                |
+| -------------------------- | ------------------------------------------------------ |
+| Eclipse Temurin Installer  | Manages JDK installations automatically                |
+| Pipeline: Stage View       | Visualizes each pipeline stage in the UI               |
+| Config File Provider       | Manages settings.xml files for Maven/Nexus integration |
+| Pipeline Maven Integration | Integrates Maven tools into Jenkins pipelines          |
+| SonarQube Scanner          | Runs SonarQube analysis from Jenkins                   |
+| Docker                     | Docker tool integration                                |
+| Docker Pipeline            | Docker commands in Jenkins pipelines                   |
+| Kubernetes Client API      | Kubernetes API client for Jenkins                      |
+| Kubernetes Credentials     | Manages Kubernetes authentication credentials          |
+| Kubernetes                 | Kubernetes integration for dynamic build agents        |
+| Kubernetes CLI             | kubectl commands in Jenkins pipelines                  |
+| Maven Integration          | Maven project type for Jenkins                         |
+| Prometheus Metrics         | Exposes Jenkins metrics for Prometheus monitoring      |
 
 After installation, **restart Jenkins** if prompted:
 
@@ -736,6 +737,7 @@ Go to **Manage Jenkins > Tools** and configure:
 4. In the configuration page:
 
 **General:**
+
 - Check **Discard old builds**
 - Set **Max # of builds to keep** to `3`
 
@@ -744,6 +746,7 @@ Go to **Manage Jenkins > Tools** and configure:
 *Configuring build retention to keep only recent builds.*
 
 **Pipeline:**
+
 - Select **Pipeline script** from the dropdown
 - Choose **Hello World** template to get started, then customize it
 
@@ -902,21 +905,21 @@ pipeline {
 
 #### Stage-by-Stage Explanation
 
-| Stage | Command | What It Does |
-|-------|---------|-------------|
-| **Git Checkout** | git branch: 'main', credentialsId: 'git-cred', url: '...' | Pulls the source code from your private GitHub repository into Jenkins workspace |
-| **Compile** | mvn compile | Compiles the Java source code to check for syntax errors |
-| **Test** | mvn test | Runs unit tests to verify functionality |
-| **File System Scan** | trivy fs --format table -o trivy-fs-report.html . | Scans the entire project for known vulnerabilities in dependencies |
-| **SonarQube Analysis** | sonar-scanner -Dsonar.projectName=... | Analyzes code quality (bugs, code smells, vulnerabilities) and publishes results to SonarQube server |
-| **Quality Gate** | waitForQualityGate | Checks if the code passes the quality conditions defined in SonarQube. If it fails, the pipeline can abort |
-| **Build** | mvn package | Packages the application into a JAR file |
-| **Publish to Nexus** | mvn deploy | Uploads the JAR artifact to Nexus repository for version management |
-| **Build Docker Image** | docker build -t user/image:latest . | Creates a Docker image from the Dockerfile in your project |
-| **Docker Image Scan** | trivy image --format table -o trivy-image-report.html image | Scans the Docker image for OS and library vulnerabilities |
-| **Push Docker Image** | docker push user/image:latest | Uploads the image to Docker Hub so Kubernetes can pull it |
-| **Deploy to Kubernetes** | kubectl apply -f deployment-service.yaml | Applies the deployment and service manifests to the Kubernetes cluster |
-| **Verify Deployment** | kubectl get pods -n webapps | Confirms that pods are running and the service is created |
+| Stage                    | Command                                                     | What It Does                                                                                               |
+| ------------------------ | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Git Checkout**         | git branch: 'main', credentialsId: 'git-cred', url: '...'   | Pulls the source code from your private GitHub repository into Jenkins workspace                           |
+| **Compile**              | mvn compile                                                 | Compiles the Java source code to check for syntax errors                                                   |
+| **Test**                 | mvn test                                                    | Runs unit tests to verify functionality                                                                    |
+| **File System Scan**     | trivy fs --format table -o trivy-fs-report.html .           | Scans the entire project for known vulnerabilities in dependencies                                         |
+| **SonarQube Analysis**   | sonar-scanner -Dsonar.projectName=...                       | Analyzes code quality (bugs, code smells, vulnerabilities) and publishes results to SonarQube server       |
+| **Quality Gate**         | waitForQualityGate                                          | Checks if the code passes the quality conditions defined in SonarQube. If it fails, the pipeline can abort |
+| **Build**                | mvn package                                                 | Packages the application into a JAR file                                                                   |
+| **Publish to Nexus**     | mvn deploy                                                  | Uploads the JAR artifact to Nexus repository for version management                                        |
+| **Build Docker Image**   | docker build -t user/image:latest .                         | Creates a Docker image from the Dockerfile in your project                                                 |
+| **Docker Image Scan**    | trivy image --format table -o trivy-image-report.html image | Scans the Docker image for OS and library vulnerabilities                                                  |
+| **Push Docker Image**    | docker push user/image:latest                               | Uploads the image to Docker Hub so Kubernetes can pull it                                                  |
+| **Deploy to Kubernetes** | kubectl apply -f deployment-service.yaml                    | Applies the deployment and service manifests to the Kubernetes cluster                                     |
+| **Verify Deployment**    | kubectl get pods -n webapps                                 | Confirms that pods are running and the service is created                                                  |
 
 > **Tip:** Use the **Pipeline Syntax** tool (available below the pipeline editor) to generate the Git checkout step. Select **git** from the sample step dropdown, enter your repository URL, branch, and credentials, then click **Generate Pipeline Script**.
 
@@ -928,12 +931,12 @@ pipeline {
 
 Before running the pipeline, add these credentials in **Manage Jenkins > Credentials > Global**:
 
-| Credential ID | Type | Purpose |
-|---------------|------|---------|
-| `git-cred` | Username with password | GitHub username + Personal Access Token for cloning the repo |
-| `sonar-token` | Secret text | SonarQube authentication token (generate at SonarQube > Administration > Security > Users > Tokens) |
-| `docker-credentials` | Username with password | Docker Hub username + password for pushing images |
-| `k8-cred` | Secret text | Kubernetes service account token for cluster access (created in Phase 4) |
+| Credential ID        | Type                   | Purpose                                                                                             |
+| -------------------- | ---------------------- | --------------------------------------------------------------------------------------------------- |
+| `git-cred`           | Username with password | GitHub username + Personal Access Token for cloning the repo                                        |
+| `sonar-token`        | Secret text            | SonarQube authentication token (generate at SonarQube > Administration > Security > Users > Tokens) |
+| `docker-credentials` | Username with password | Docker Hub username + password for pushing images                                                   |
+| `k8-cred`            | Secret text            | Kubernetes service account token for cluster access (created in Phase 4)                            |
 
 ![](../resources/ci-cd-with-jenkins-and-aws/sonar-token.png)
 
@@ -1044,7 +1047,7 @@ After running the pipeline successfully, you can view the results:
 
 ---
 
-## Phase 4 — Kubernetes Deployment Setup
+## Phase 4 — ☸️ Kubernetes Deployment Setup
 
 Before Jenkins can deploy to the Kubernetes cluster, you need to create a **service account** with proper permissions using **RBAC (Role-Based Access Control)**.
 
@@ -1252,7 +1255,7 @@ ci-cd-pipeline-test-app-svc    LoadBalancer   10.107.153.15   <pending>     8080
 
 ---
 
-## Phase 5 — Monitoring
+## Phase 5 — 📊 Monitoring
 
 ### Monitoring Architecture Overview
 
@@ -1303,13 +1306,13 @@ By default, Prometheus runs on port **9090**. Access it at `http://<MONITOR_IP>:
 nohup ./prometheus --config.file=prometheus.yml --web.listen-address=:8080 > prometheus.log 2>&1 &
 ```
 
-| Part | What It Does |
-|------|-------------|
-| `nohup` | Keeps the process running even after you log out |
-| `--config.file=prometheus.yml` | Specifies the configuration file |
-| `--web.listen-address=:8080` | Runs Prometheus on port 8080 instead of the default 9090 |
-| `> prometheus.log 2>&1` | Redirects output to a log file |
-| `&` | Runs the process in the background |
+| Part                           | What It Does                                             |
+| ------------------------------ | -------------------------------------------------------- |
+| `nohup`                        | Keeps the process running even after you log out         |
+| `--config.file=prometheus.yml` | Specifies the configuration file                         |
+| `--web.listen-address=:8080`   | Runs Prometheus on port 8080 instead of the default 9090 |
+| `> prometheus.log 2>&1`        | Redirects output to a log file                           |
+| `&`                            | Runs the process in the background                       |
 
 ### 5.2 Set Up Grafana
 
@@ -1486,25 +1489,25 @@ Restart Prometheus and import a **Node Exporter dashboard** in Grafana (search f
 
 ---
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
-| Problem | Possible Cause | Solution |
-|---------|---------------|----------|
-| `kubectl get nodes` shows `NotReady` | Flannel CNI not installed or not running | Run `kubectl get pods -n kube-flannel` and check pod status |
-| Worker cannot join cluster | Security Group blocking port 6443 | Add inbound rule for TCP 6443 from the security group |
-| Pods stuck in `ContainerCreating` | Image not found or containerd misconfigured | Check `kubectl describe pod <pod-name>` for events |
-| Jenkins cannot deploy to K8s | kubectl not installed or wrong credentials | Install kubectl and verify the `k8-cred` credential |
-| SonarQube not accessible | Container not running or port not open | Check `docker ps`, verify security group allows port 9000 |
-| Nexus password not working | Wrong password retrieved | Use `docker exec -it <container_id> /bin/sh` then `cat /nexus-data/admin.password` |
-| Pipeline fails at Docker build | Docker not installed on Jenkins server | Install Docker on the Jenkins server following Section 1.7 |
-| Cannot access application on NodePort | Security Group missing port range | Add inbound rule for TCP 30000-32767 |
-| Prometheus not scraping targets | Wrong targets in prometheus.yml | Verify IP addresses and port numbers in the configuration |
-| Grafana shows no data | Prometheus data source misconfigured | Check the Prometheus URL in Grafana data source settings |
-| Email notifications not working | SMTP port not open or wrong credentials | Ensure port 465 is open; use Gmail App Password, not account password |
+| Problem                               | Possible Cause                              | Solution                                                                           |
+| ------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `kubectl get nodes` shows `NotReady`  | Flannel CNI not installed or not running    | Run `kubectl get pods -n kube-flannel` and check pod status                        |
+| Worker cannot join cluster            | Security Group blocking port 6443           | Add inbound rule for TCP 6443 from the security group                              |
+| Pods stuck in `ContainerCreating`     | Image not found or containerd misconfigured | Check `kubectl describe pod <pod-name>` for events                                 |
+| Jenkins cannot deploy to K8s          | kubectl not installed or wrong credentials  | Install kubectl and verify the `k8-cred` credential                                |
+| SonarQube not accessible              | Container not running or port not open      | Check `docker ps`, verify security group allows port 9000                          |
+| Nexus password not working            | Wrong password retrieved                    | Use `docker exec -it <container_id> /bin/sh` then `cat /nexus-data/admin.password` |
+| Pipeline fails at Docker build        | Docker not installed on Jenkins server      | Install Docker on the Jenkins server following Section 1.7                         |
+| Cannot access application on NodePort | Security Group missing port range           | Add inbound rule for TCP 30000-32767                                               |
+| Prometheus not scraping targets       | Wrong targets in prometheus.yml             | Verify IP addresses and port numbers in the configuration                          |
+| Grafana shows no data                 | Prometheus data source misconfigured        | Check the Prometheus URL in Grafana data source settings                           |
+| Email notifications not working       | SMTP port not open or wrong credentials     | Ensure port 465 is open; use Gmail App Password, not account password              |
 
 ---
 
-## Next Steps
+## 🎉 Next Steps
 
 Congratulations! You have built a complete CI/CD pipeline from scratch. Here are some ideas to extend what you have learned:
 
