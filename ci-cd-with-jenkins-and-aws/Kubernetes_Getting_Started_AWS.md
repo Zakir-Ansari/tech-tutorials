@@ -43,6 +43,7 @@
 
 This guide walks you through every phase — from provisioning infrastructure to a healthy, running cluster — with beginner-friendly explanations at each step.
 
+<a id="what-you-will-build"></a>
 ## 🎯 What You Will Build
 
 By the end of this guide, you will have:
@@ -53,6 +54,7 @@ By the end of this guide, you will have:
 - ✅ **Flannel** CNI plugin for pod networking
 - ✅ A fully functional cluster where both nodes report `Ready` status
 
+<a id="cluster-topology"></a>
 ## 🗺️ Cluster Topology
 
 | Role                   | Hostname | Private IP            | Public IP            |
@@ -62,6 +64,7 @@ By the end of this guide, you will have:
 
 > **Note:** Replace all placeholder IPs (`<MASTER_PRIVATE_IP>`, `<WORKER_PRIVATE_IP>`, etc.) with your actual EC2 instance IPs throughout this guide.
 
+<a id="tech-stack"></a>
 ## 🛠️ Tech Stack
 
 | Component         | Version          |
@@ -73,6 +76,7 @@ By the end of this guide, you will have:
 
 ---
 
+<a id="prerequisites"></a>
 ## 📋 Prerequisites
 
 Before you begin, make sure you have the following:
@@ -97,6 +101,7 @@ Before you begin, make sure you have the following:
 
 ---
 
+<a id="components--tools-explained"></a>
 ## 🧩 Components & Tools Explained
 
 This tutorial uses several tools and components. The table below explains each one so you understand what you are installing and why.
@@ -119,6 +124,7 @@ This tutorial uses several tools and components. The table below explains each o
 
 ---
 
+<a id="architecture-overview"></a>
 ## 🏛️ Architecture Overview
 
 Below is a simplified view of the two-node Kubernetes cluster. The master manages the cluster, and the worker runs your applications.
@@ -160,6 +166,7 @@ graph LR
 
 ---
 
+<a id="phase-1-aws-infrastructure-setup"></a>
 # Phase 1: ☁️ AWS Infrastructure Setup
 
 <p align="center">
@@ -216,6 +223,7 @@ Keep the AWS default — allow all outbound traffic:
 
 ---
 
+<a id="phase-2-verify-network-connectivity"></a>
 # Phase 2: 🔍 Verify Network Connectivity
 
 Before installing anything, verify that the two instances can communicate with each other over the private network.
@@ -263,6 +271,7 @@ ping <MASTER_PRIVATE_IP>
 
 ---
 
+<a id="phase-3-clean-installation-if-rebuilding"></a>
 # Phase 3: 🧹 Clean Installation (If Rebuilding)
 
 > **Skip this phase** if you are installing Kubernetes on fresh instances for the first time. Only follow these steps if you previously ran `kubeadm init` and need to start over.
@@ -361,6 +370,7 @@ If you see these results, the cleanup is complete. Proceed to Phase 4.
 
 ---
 
+<a id="phase-4-install--configure-containerd"></a>
 # Phase 4: 📦 Install & Configure containerd
 
 <p align="center">
@@ -538,6 +548,7 @@ Active: active (running)
 
 ---
 
+<a id="phase-5-install-kubernetes-components"></a>
 # Phase 5: ⚙️ Install Kubernetes Components
 
 This phase installs `kubeadm`, `kubelet`, and `kubectl` from the official Kubernetes repository.
@@ -625,6 +636,7 @@ sudo apt install -y crictl
 
 ---
 
+<a id="phase-6-pre-flight-checks-master-only"></a>
 # Phase 6: ✅ Pre-Flight Checks (Master Only)
 
 Before initializing the control plane, run these checks **on the master node only** to catch issues early.
@@ -681,6 +693,7 @@ kubeadm version
 
 ---
 
+<a id="phase-7-initialize-the-control-plane"></a>
 # Phase 7: 🚀 Initialize the Control Plane
 
 This is the most critical step. The control plane consists of the API server, etcd, scheduler, and controller manager.
@@ -739,6 +752,7 @@ master    NotReady   control-plane   ...   v1.34.9
 
 ---
 
+<a id="phase-8-install-the-cni-plugin-flannel"></a>
 # Phase 8: 🌐 Install the CNI Plugin (Flannel)
 
 **Flannel** is a simple and reliable CNI (Container Network Interface) plugin. It creates a virtual network that gives every pod a unique IP address and enables cross-node pod communication.
@@ -807,6 +821,7 @@ The status should change from **NotReady** to **Ready** after Flannel is running
 
 ---
 
+<a id="phase-9-join-the-worker-node"></a>
 # Phase 9: 🔗 Join the Worker Node
 
 Now that the master is healthy, you can join the worker node to the cluster.
@@ -862,6 +877,7 @@ Both nodes should show `Ready` status.
 
 ---
 
+<a id="phase-10-final-validation"></a>
 # Phase 10: 🎉 Final Validation
 
 Run these commands on the **master** to confirm the cluster is fully operational.
@@ -906,6 +922,7 @@ This shows the API server and CoreDNS endpoints.
 
 ---
 
+<a id="handy-commands-reference"></a>
 # 📖 Handy Commands Reference
 
 ## Nodes
@@ -976,6 +993,7 @@ sudo rm -rf ~/.kube
 
 ---
 
+<a id="troubleshooting"></a>
 # 🔧 Troubleshooting
 
 | Problem                           | Possible Cause                                               | Solution                                                                    |

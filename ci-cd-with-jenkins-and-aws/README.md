@@ -40,7 +40,7 @@
   - [1.3 Create Kubernetes Cluster VMs](#13-create-kubernetes-cluster-vms)
   - [1.4 Install & Configure Kubernetes Cluster](#14-install--configure-kubernetes-cluster)
   - [1.5 Scan the Kubernetes Cluster (kubeaudit)](#15-scan-the-kubernetes-cluster-kubeaudit)
-  - [1.6 Create Tool Server VMs (Jenkins, SonarQube, Nexus)](#16-create-tool-server-vms-jenkins-sonarnexus)
+  - [1.6 Create Tool Server VMs (Jenkins, SonarQube, Nexus)](#16-create-tool-server-vms-jenkins-sonarqube-nexus)
   - [1.7 Install Docker on All Tool Servers](#17-install-docker-on-all-tool-servers)
   - [1.8 Set Up SonarQube](#18-set-up-sonarqube)
   - [1.9 Set Up Nexus](#19-set-up-nexus)
@@ -70,6 +70,7 @@
 
 ---
 
+<a id="introduction"></a>
 ## 📖 Introduction
 
 In a real-world corporate environment, shipping code to production is never as simple as running it on your laptop. You need a robust pipeline that automates building, testing, scanning, deploying, and monitoring — all while keeping your infrastructure secure.
@@ -86,6 +87,7 @@ No prior DevOps experience is required. Every command and concept is explained w
 
 ---
 
+<a id="what-you-will-build"></a>
 ## 🎯 What You Will Build
 
 By the end of this tutorial, you will have:
@@ -102,6 +104,7 @@ By the end of this tutorial, you will have:
 
 ---
 
+<a id="pipeline-architecture"></a>
 ## 🏗️ Pipeline Architecture
 
 ![](../resources/ci-cd-with-jenkins-and-aws/ci-cd-pipeline-1.png)
@@ -141,6 +144,7 @@ flowchart LR
 
 ---
 
+<a id="prerequisites"></a>
 ## 📋 Prerequisites
 
 ### AWS Requirements
@@ -166,6 +170,7 @@ flowchart LR
 
 ---
 
+<a id="tools-services--components"></a>
 ## 🧰 Tools, Services & Components
 
 This tutorial uses many tools. The table below explains each one so you understand what you are installing and why.
@@ -206,6 +211,7 @@ This tutorial uses many tools. The table below explains each one so you understa
 
 ---
 
+<a id="aws-infrastructure-setup"></a>
 ## ☁️ AWS Infrastructure Setup
 
 Before installing any tools, you need a secure network environment. In a corporate setup, all resources are deployed in an isolated network so that no outside entity can access them.
@@ -224,12 +230,15 @@ Before installing any tools, you need a secure network environment. In a corpora
 
 ---
 
+<a id="phase-1--infrastructure-setup"></a>
 ## Phase 1 — 🖥️ Infrastructure Setup
 
+<a id="11-create-a-secure-network-vpc"></a>
 ### 1.1 Create a Secure Network (VPC)
 
 As explained above, ensure you have your VPC ready. All EC2 instances in this tutorial will be launched within this VPC so they can communicate over private IPs.
 
+<a id="12-configure-security-groups"></a>
 ### 1.2 Configure Security Groups
 
 A **Security Group** acts as a virtual firewall for your EC2 instances. You need to open specific ports so that your tools can communicate with each other.
@@ -255,6 +264,7 @@ Go to **EC2 > Security Groups** and modify the default security group (or create
 
 *Security group inbound rules configuration.*
 
+<a id="13-create-kubernetes-cluster-vms"></a>
 ### 1.3 Create Kubernetes Cluster VMs
 
 Create **three EC2 instances** for your Kubernetes cluster:
@@ -285,6 +295,7 @@ Create **three EC2 instances** for your Kubernetes cluster:
 
 *All three Kubernetes cluster instances running.*
 
+<a id="14-install--configure-kubernetes-cluster"></a>
 ### 1.4 Install & Configure Kubernetes Cluster
 
 Connect to each instance using SSH. You can use your terminal or an SSH tool like **MobaXterm** (Windows) or **Asbru** (Linux).
@@ -437,6 +448,7 @@ All nodes should show `Ready` status.
 
 *Kubernetes cluster nodes in Ready state.*
 
+<a id="15-scan-the-kubernetes-cluster-kubeaudit"></a>
 ### 1.5 Scan the Kubernetes Cluster (kubeaudit)
 
 Before deploying any application, it is a security best practice to scan your cluster for misconfigurations and vulnerabilities. We use **kubeaudit** for this.
@@ -459,6 +471,7 @@ kubeaudit all
 
 > **Note:** The report may show issues related to missing RBAC roles, service accounts, or security policies. This is expected in a fresh cluster. The infra team can analyze and address these findings.
 
+<a id="16-create-tool-server-vms-jenkins-sonarqube-nexus"></a>
 ### 1.6 Create Tool Server VMs (Jenkins, SonarQube, Nexus)
 
 Now create additional EC2 instances for your DevOps tools. Go to **EC2 > Launch Instance** and create:
@@ -481,6 +494,7 @@ Connect to each instance and run the first command:
 sudo apt update
 ```
 
+<a id="17-install-docker-on-all-tool-servers"></a>
 ### 1.7 Install Docker on All Tool Servers
 
 Docker is needed to run SonarQube and Nexus as containers, and also for building Docker images in Jenkins.
@@ -517,6 +531,7 @@ sudo chmod 666 /var/run/docker.sock
 
 > **Why this matters:** By default, only the `root` user can run Docker commands. This command allows the `ubuntu` user to execute Docker commands without `sudo`.
 
+<a id="18-set-up-sonarqube"></a>
 ### 1.8 Set Up SonarQube
 
 Run this on the **SonarQube server**:
@@ -549,6 +564,7 @@ d3967f37e498   sonarqube:lts-community   "/opt/sonarqube/dock..." Up About a min
 - **Default credentials:** `admin` / `admin`
 - You will be prompted to change the password on first login
 
+<a id="19-set-up-nexus"></a>
 ### 1.9 Set Up Nexus
 
 Run this on the **Nexus server**:
@@ -578,6 +594,7 @@ cat /nexus-data/admin.password
 
 Copy the password, paste it in the browser, and set a new password. You can enable or disable **Anonymous Access** based on your preference.
 
+<a id="110-set-up-jenkins"></a>
 ### 1.10 Set Up Jenkins
 
 Connect to the **Jenkins server** and install Jenkins.
@@ -626,6 +643,7 @@ Paste the password in the browser. On the **Customize Jenkins** page, select **I
 
 ---
 
+<a id="phase-2--source-code-management"></a>
 ## Phase 2 — 📂 Source Code Management
 
 ### Create a Private GitHub Repository
@@ -652,8 +670,10 @@ git push origin main
 
 ---
 
+<a id="phase-3--cicd-pipeline-configuration"></a>
 ## Phase 3 — ⚙️ CI/CD Pipeline Configuration
 
+<a id="31-install-jenkins-plugins"></a>
 ### 3.1 Install Jenkins Plugins
 
 Go to **Manage Jenkins > Plugins > Available Plugins** and install the following:
@@ -680,6 +700,7 @@ After installation, **restart Jenkins** if prompted:
 http://<JENKINS_IP>:8080/restart
 ```
 
+<a id="32-configure-jenkins-tools"></a>
 ### 3.2 Configure Jenkins Tools
 
 Go to **Manage Jenkins > Tools** and configure:
@@ -724,6 +745,7 @@ Go to **Manage Jenkins > Tools** and configure:
 
 *Configuring Docker installation in Jenkins Tools.*
 
+<a id="33-create-the-jenkins-pipeline"></a>
 ### 3.3 Create the Jenkins Pipeline
 
 1. Go to **Jenkins Dashboard > New Item**
@@ -750,6 +772,7 @@ Go to **Manage Jenkins > Tools** and configure:
 - Select **Pipeline script** from the dropdown
 - Choose **Hello World** template to get started, then customize it
 
+<a id="34-pipeline-stages-explained"></a>
 ### 3.4 Pipeline Stages Explained
 
 Here is the complete Jenkins pipeline. Each stage is explained below:
@@ -1047,12 +1070,14 @@ After running the pipeline successfully, you can view the results:
 
 ---
 
+<a id="phase-4--kubernetes-deployment-setup"></a>
 ## Phase 4 — ☸️ Kubernetes Deployment Setup
 
 Before Jenkins can deploy to the Kubernetes cluster, you need to create a **service account** with proper permissions using **RBAC (Role-Based Access Control)**.
 
 > **What is RBAC?** RBAC is a security model where you define roles with specific permissions and assign them to users or service accounts. Instead of giving everyone full access, you grant only the permissions needed for their job.
 
+<a id="41-create-a-service-account-rbac"></a>
 ### 4.1 Create a Service Account (RBAC)
 
 On the **Master node**, create the following YAML files:
@@ -1142,6 +1167,7 @@ subjects:
 kubectl apply -f svc_acc_bind.yml
 ```
 
+<a id="42-generate-a-token-for-jenkins"></a>
 ### 4.2 Generate a Token for Jenkins
 
 Create a secret to generate an authentication token:
@@ -1175,6 +1201,7 @@ Copy the `token` value from the output. Then go to **Jenkins > Manage Jenkins > 
 - **ID:** `k8-cred`
 - **Description:** Kubernetes cluster token
 
+<a id="43-install-kubectl-on-jenkins"></a>
 ### 4.3 Install kubectl on Jenkins
 
 Jenkins needs `kubectl` to interact with the Kubernetes cluster. Install it on the Jenkins server:
@@ -1186,6 +1213,7 @@ sudo mv kubectl /usr/local/bin/
 kubectl version --client
 ```
 
+<a id="44-create-deployment--service-manifests"></a>
 ### 4.4 Create Deployment & Service Manifests
 
 Add a `deployment-service.yaml` file to the **root of your GitHub repository**:
@@ -1230,6 +1258,7 @@ spec:
 
 > **Note:** On a self-hosted Kubernetes cluster (like ours), LoadBalancer services may not automatically get an external IP. In that case, access the app using the NodePort: `http://<ANY_NODE_IP>:<NODE_PORT>`.
 
+<a id="45-deploy--verify"></a>
 ### 4.5 Deploy & Verify
 
 Run the Jenkins pipeline. After successful execution, check the deployment:
@@ -1255,6 +1284,7 @@ ci-cd-pipeline-test-app-svc    LoadBalancer   10.107.153.15   <pending>     8080
 
 ---
 
+<a id="phase-5--monitoring"></a>
 ## Phase 5 — 📊 Monitoring
 
 ### Monitoring Architecture Overview
@@ -1278,6 +1308,7 @@ flowchart LR
     GRAF -->|Queries| PROM
 ```
 
+<a id="51-set-up-prometheus"></a>
 ### 5.1 Set Up Prometheus
 
 Create a new EC2 instance named **Monitor** (t2.large recommended) and connect to it.
@@ -1314,6 +1345,7 @@ nohup ./prometheus --config.file=prometheus.yml --web.listen-address=:8080 > pro
 | `> prometheus.log 2>&1`        | Redirects output to a log file                           |
 | `&`                            | Runs the process in the background                       |
 
+<a id="52-set-up-grafana"></a>
 ### 5.2 Set Up Grafana
 
 On the **Monitor server**, install Grafana:
@@ -1339,6 +1371,7 @@ sudo /bin/systemctl start grafana-server
 - **Default credentials:** `admin` / `admin`
 - You will be prompted to change the password on first login
 
+<a id="53-set-up-blackbox-exporter"></a>
 ### 5.3 Set Up Blackbox Exporter
 
 The **Blackbox Exporter** probes your websites from the outside to check uptime and response time.
@@ -1359,6 +1392,7 @@ cd blackbox_exporter-0.28.0.linux-amd64
 
 Blackbox Exporter runs on port **9115** by default. Access it at `http://<MONITOR_IP>:9115`.
 
+<a id="54-configure-prometheus-to-scrape-targets"></a>
 ### 5.4 Configure Prometheus to Scrape Targets
 
 Edit the `prometheus.yml` file in the Prometheus folder and add scrape jobs:
@@ -1416,6 +1450,7 @@ After restarting, verify that your targets are being scraped by visiting `http:/
 
 *Prometheus Targets page showing Blackbox and Jenkins exporters as UP.*
 
+<a id="55-connect-prometheus-to-grafana"></a>
 ### 5.5 Connect Prometheus to Grafana
 
 1. Open Grafana at `http://<MONITOR_IP>:3000`
@@ -1428,6 +1463,7 @@ After restarting, verify that your targets are being scraped by visiting `http:/
 
 *Adding Prometheus as a data source in Grafana.*
 
+<a id="56-import-a-grafana-dashboard"></a>
 ### 5.6 Import a Grafana Dashboard
 
 1. In Grafana, click the **+** icon (top) > **Import dashboard**
@@ -1447,6 +1483,7 @@ After restarting, verify that your targets are being scraped by visiting `http:/
 
 *Grafana dashboard showing Blackbox Exporter probe results for the deployed application.*
 
+<a id="57-system-level-monitoring-with-node-exporter"></a>
 ### 5.7 System-Level Monitoring with Node Exporter
 
 **Node Exporter** reports CPU, RAM, disk, and network metrics from a server. We will monitor Jenkins system metrics.
@@ -1489,6 +1526,7 @@ Restart Prometheus and import a **Node Exporter dashboard** in Grafana (search f
 
 ---
 
+<a id="troubleshooting"></a>
 ## 🔧 Troubleshooting
 
 | Problem                               | Possible Cause                              | Solution                                                                           |
@@ -1507,6 +1545,7 @@ Restart Prometheus and import a **Node Exporter dashboard** in Grafana (search f
 
 ---
 
+<a id="next-steps"></a>
 ## 🎉 Next Steps
 
 Congratulations! You have built a complete CI/CD pipeline from scratch. Here are some ideas to extend what you have learned:
